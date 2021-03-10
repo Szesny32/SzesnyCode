@@ -22,9 +22,9 @@ const GLchar* fragmentShaderSource =
 
 float vertexData[] = 
 {
-	-0.5f, -0.5f, 0.0f, 
-	 0.5f, -0.5f, 0.0f, 
-	 0.0f,  0.5f, 0.0f  
+	-0.1f, -0.1f, 0.0f, 
+	 0.1f, -0.1f, 0.0f, 
+	 0.0f,  0.14f, 0.0f  
 };
 
 
@@ -99,6 +99,8 @@ int main()
 	}
 
 	//End
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
 	glDeleteProgram(shaderProgram);
 	glfwTerminate();
 	return 0;
