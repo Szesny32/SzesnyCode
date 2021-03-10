@@ -27,6 +27,9 @@
     <ClCompile Include="viewport.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="shaders.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="userInput.h">
@@ -36,6 +39,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="viewport.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="shaders.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

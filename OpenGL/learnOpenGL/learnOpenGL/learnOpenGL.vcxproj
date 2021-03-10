@@ -153,11 +153,13 @@
   <ItemGroup>
     <ClCompile Include="..\..\Resource Files\Source Files\glad.c" />
     <ClCompile Include="main.cpp" />
+    <ClCompile Include="shaders.cpp" />
     <ClCompile Include="userInput.cpp" />
     <ClCompile Include="viewport.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include.h" />
+    <ClInclude Include="shaders.h" />
     <ClInclude Include="userInput.h" />
     <ClInclude Include="viewport.h" />
   </ItemGroup>
