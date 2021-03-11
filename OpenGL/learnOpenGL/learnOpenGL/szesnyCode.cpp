@@ -403,93 +403,92 @@ void F3_Rectangle_ex3(GLFWwindow* window)
 void F_RoseOfTheWind(GLFWwindow*window)
 {
 
-		const GLchar* vertexShaderSource =
-	"#version 330 core\n"
-	"layout(location=0) in vec3 aPos;\n"	//location of the input variable; input vertex data (x,y,z)
-	"void main()\n"
-	"{\n"
-	"	gl_Position = vec4(aPos.x, aPos.y, aPos.z, 1.0);\n"
+	const GLchar* vertexShaderSource =
+		"#version 330 core\n"
+		"layout(location=0) in vec3 aPos;\n"	//location of the input variable; input vertex data (x,y,z)
+		"layout(location=1) in vec3 aColor;\n"
+		"out vec3 ourColor;\n"
+		"void main()\n"
+		"{\n"
+		"	gl_Position = vec4(aPos, 1.0);\n"
+		"ourColor = aColor;\n"
 	"}\0";
 
 	const GLchar* fragmentShaderSource =
 	"#version 330 core\n"
 	"out vec4 FragColor;\n"
+	"in vec3 ourColor;\n"
+	"uniform vec4 ourColor2;\n"
 	"void main()\n"
 	"{\n"
-	"	FragColor = vec4(1.0f, 1.0f, 1.0f, 1.0f);\n" //RGBA
+	"	FragColor = vec4(ourColor, 1.0f)+ourColor2;\n" //RGBA
 	"}\0";
 
-	const GLchar* fragmentShaderSource2 =
-	"#version 330 core\n"
-	"out vec4 FragColor;\n"
-	"void main()\n"
-	"{\n"
-	"	FragColor = vec4(0.0f, 0.0f, 0.0f, 1.0f);\n" //RGBA
-	"}\0";
 	float vertexData[] =
 	{
-		0.0f, 0.0f, 0.0f,
-		0.0f, 0.5f, 0.0f,
-		0.1f, 0.1f, 0.1f,
-		0.5f, 0.0f, 0.0f,
-		0.1f, -0.1f, 0.0f,
-		0.0f, -0.5f, 0.0f,
-		-0.1f, -0.1f, 0.0f,
-		-0.5f, 0.0f, 0.0f,
-		-0.1f, 0.1f, 0.0f,
+		0.0f, 0.0f, 0.0f, 1.0f, 1.0f, 1.0f,
+		0.0f, 0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+		0.1f, 0.1f, 0.1f, 1.0f, 0.0f, 0.0f,
+		0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		0.1f, -0.1f, 0.0f, 1.0f, 0.0f, 0.0f,
+		0.0f, -0.5f, 0.0f, 1.0f, 0.0f, 0.0f,
+		-0.1f, -0.1f, 0.0f, 1.0f, 0.0f, 0.0f,
+		-0.5f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
+		-0.1f, 0.1f, 0.0f, 1.0f, 0.0f, 0.0f,
 	};
 	unsigned int indices[] =
 	{
 		0,2,3,
 		0,4,5,
 		0,6,7,
-		0,1,8
-	};
-	unsigned int indices2[] =
-	{
+		0,1,8,
 		0,1,2,
 		0,3,4,
 		0,5,6,
-		0,7,8,
+		0,7,8
 	};
+
 
 	GLuint vertexShader, fragmentShader, fragmentShader2;
 	szesnyCreateShader(vertexShader, GL_VERTEX_SHADER, &vertexShaderSource);
 	szesnyCreateShader(fragmentShader, GL_FRAGMENT_SHADER, &fragmentShaderSource);
-	szesnyCreateShader(fragmentShader2, GL_FRAGMENT_SHADER, &fragmentShaderSource2);
-
 	GLuint shaderProgram = szesnyCreateProgram(vertexShader, fragmentShader);
-	GLuint shaderProgram2 = szesnyCreateProgram(vertexShader, fragmentShader2);
+
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-	glDeleteShader(fragmentShader2);
+
 
 	GLuint VBO;
-	GLuint VAO[2];
-	GLuint EBO[2];
-	glGenVertexArrays(2, VAO);
+	GLuint VAO;
+	GLuint EBO;
+	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
-	glGenBuffers(2, EBO);
+	glGenBuffers(1, &EBO);
 
-	glBindVertexArray(VAO[0]);
+	glBindVertexArray(VAO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[0]);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
 	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
 	glEnableVertexAttribArray(0);
+	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3*sizeof(float)));
+	glEnableVertexAttribArray(1);
 
-	glBindVertexArray(VAO[1]);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO[1]);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices2), indices2, GL_STATIC_DRAW);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
-	glEnableVertexAttribArray(0);
+	
 
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
+
+
+	GLfloat timeValue;
+GLfloat Value;
+	GLint vertexColorLocation;
+	glBindVertexArray(VAO);
+	glUseProgram(shaderProgram);
 	while (!glfwWindowShouldClose(window))
 	{
 		userInput(window);
@@ -497,27 +496,23 @@ void F_RoseOfTheWind(GLFWwindow*window)
 		glClearColor(0.926f, 0.836f, 0.789f, 1.0f);
 		glClear(GL_COLOR_BUFFER_BIT);
 
-		for (int i = 0; i < 8; i++)
-		{
-			if (i % 2)
-			{
-				glBindVertexArray(VAO[0]);
-				glUseProgram(shaderProgram);
-			}
-			else
-			{
-				glBindVertexArray(VAO[1]);
-				glUseProgram(shaderProgram2);
-			}
-			glDrawElements(GL_TRIANGLES, 12, GL_UNSIGNED_INT,0);
-		}
+		
+				timeValue = glfwGetTime();
+				Value = sin(timeValue) / 2.0f + 0.5f;
+				vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor2");
+				glUniform4f(vertexColorLocation, Value, Value/2, 0.0f, 1.0f);
+		
+			glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
+		
 		glfwSwapBuffers(window);
 		glfwPollEvents();
 	}
 
-	glDeleteVertexArrays(2, VAO);
+
+
+	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(2, EBO);
+	glDeleteBuffers(1, &EBO);
 	glDeleteProgram(shaderProgram);
-	glDeleteProgram(shaderProgram2);
+
 }

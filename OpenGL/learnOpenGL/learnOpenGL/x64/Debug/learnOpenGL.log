@@ -1,2 +1,4 @@
-﻿  main.cpp
+﻿  szesnyCode.cpp
+C:\Users\BarTek\source\repos\SzesnyCode\OpenGL\learnOpenGL\learnOpenGL\szesnyCode.cpp(500,28): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\BarTek\source\repos\SzesnyCode\OpenGL\learnOpenGL\learnOpenGL\szesnyCode.cpp(452,39): warning C4101: 'fragmentShader2': unreferenced local variable
   learnOpenGL.vcxproj -> C:\Users\BarTek\source\repos\SzesnyCode\OpenGL\learnOpenGL\x64\Debug\learnOpenGL.exe
