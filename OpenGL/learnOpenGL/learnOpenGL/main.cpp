@@ -22,9 +22,16 @@ const GLchar* fragmentShaderSource =
 
 float vertexData[] = 
 {
-	-0.1f, -0.1f, 0.0f, 
-	 0.1f, -0.1f, 0.0f, 
-	 -0.1f,  0.1f, 0.0f  
+0.1f, 0.1f, 0.0f, 
+0.1f, -0.1f, 0.0f, 
+-0.1f, -0.1f, 0.0f, 
+-0.1f, 0.1f, 0.0f
+};
+
+unsigned int indices[] =
+{
+	0,1,3,
+	1,2,3
 };
 
 
@@ -37,7 +44,7 @@ int main()
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);		//version 3.3
 	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	//#creatining program window (width & height in pixels, title, fullscreen mode, shared resources)
+	//#creating window program (width & height in pixels, title, fullscreen mode, shared resources)
 	GLFWwindow* window = glfwCreateWindow(1280, 720, "OpenGL", NULL, NULL);
 	if (!window)
 	{
@@ -81,19 +88,24 @@ int main()
 		- call to glEnableVertexAttribArray or glDisableVertexAttribArray
 		- vertex attribute configurations via glVertexAttribPointer
 		- VBO associated with vertex attributes by calls to glVertexAttributePointer */
+	
+	GLuint EBO; // element buffer objects - stores indices that OpenGL uses to decide what vertices to draw
 
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
+	glGenBuffers(1, &EBO);
 	glBindVertexArray(VAO); //To use a VAO all you have to do is bind the VAO
 	glBindBuffer(GL_ARRAY_BUFFER, VBO); 
 	/*	buffer type of VBO is GL_ARRAY_BUFFER
 		From that point on any buffer calls we make(on the GL_ARRAY_BUFFER target) will be
 		used to configure the currently bound buffer, which is VBO. */
-
+	
 	glBufferData(GL_ARRAY_BUFFER, sizeof(vertexData), vertexData, GL_STATIC_DRAW);
 	/*	copies the previously defined vertex data into the buffer’s memory
 	The fourth parameter specifies how we want the graphics card to manage the given data. */
 	
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
+	glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(indices), indices, GL_STATIC_DRAW);
 	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
 	/*	we have to specify how OpenGL should interpret the vertex data before rendering.
 		The first argument specifies wich vertex attribute we want to configure
@@ -104,13 +116,13 @@ int main()
 		The fifth argument is stride - space between consecutive vertex attributes.
 		The sixth argument is offset od where the position data begins in the buffer.*/
 
-
 	glEnableVertexAttribArray(0); //enable the giving the vertex attribute vertex attribute location as its argument; vertex attributes are disabled by default.
-
 
 	//#unbind
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
+	// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
 	glBindVertexArray(0);
+	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
 	//#render loop
 	while (!glfwWindowShouldClose(window))
@@ -124,7 +136,8 @@ int main()
 
 		glUseProgram(shaderProgram); 
 		glBindVertexArray(VAO);
-		glDrawArrays(GL_TRIANGLES, 0, 3);
+		//glDrawArrays(GL_TRIANGLES, 0, 3);
+		glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
 
 		glfwSwapBuffers(window);
 		glfwPollEvents(); //callback management
@@ -133,6 +146,7 @@ int main()
 	//#end
 	glDeleteVertexArrays(1, &VAO);
 	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
 	glDeleteProgram(shaderProgram);
 	glfwTerminate();
 	return 0;
