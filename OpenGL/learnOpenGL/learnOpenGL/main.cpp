@@ -38,7 +38,7 @@ int main()
 	//F3_Rectangle_ex1(window);
 	//F3_Rectangle_ex2(window);
 	//F3_Rectangle_ex3(window);
-	//F_RoseOfTheWind(window);
+	F_RoseOfTheWind(window);
 
 
 
