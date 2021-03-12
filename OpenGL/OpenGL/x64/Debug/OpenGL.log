@@ -1,3 +1,3 @@
 ﻿  main.cpp
-C:\Users\BarTek\source\repos\SzesnyCode\OpenGL\OpenGL\main.cpp(155,26): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
+C:\Users\BarTek\source\repos\SzesnyCode\OpenGL\OpenGL\main.cpp(98,26): warning C4244: '=': conversion from 'double' to 'GLfloat', possible loss of data
   OpenGL.vcxproj -> C:\Users\BarTek\source\repos\SzesnyCode\OpenGL\x64\Debug\OpenGL.exe

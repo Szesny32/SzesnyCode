@@ -6,6 +6,10 @@
 void viewportResize(GLFWwindow* window, int width, int height);
 void userInput(GLFWwindow* window);
 
+GLuint createShader();
+void linkVertexAttributes(GLuint &VBO, GLuint &VAO, GLuint &EBO);
+
+
 const GLchar* vertexShaderSource =
 "#version 330 core\n"
 "layout(location=0) in vec3 aPos;\n"	
@@ -73,8 +77,57 @@ int main()
 		return -1;
 	}
 
+	GLuint shaderProgram = createShader();
 
-	//SHADERS
+	GLuint VAO, VBO, EBO;
+	linkVertexAttributes(VBO,VAO,EBO);
+
+	GLfloat timeValue;
+	GLfloat Value;
+	GLint vertexColorLocation;
+	glBindVertexArray(VAO);
+	glUseProgram(shaderProgram);
+	while (!glfwWindowShouldClose(window))
+	{
+		userInput(window);
+
+		glClearColor(0.926f, 0.836f, 0.789f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
+
+
+		timeValue = glfwGetTime();
+		Value = sin(timeValue) / 2.0f + 0.5f;
+		vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor2");
+		glUniform4f(vertexColorLocation, Value, Value / 2, 0.0f, 1.0f);
+
+		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
+
+		glfwSwapBuffers(window);
+		glfwPollEvents();
+	}
+
+	glDeleteVertexArrays(1, &VAO);
+	glDeleteBuffers(1, &VBO);
+	glDeleteBuffers(1, &EBO);
+	glDeleteProgram(shaderProgram);
+	glfwTerminate();
+	return 0;
+
+}
+
+void viewportResize(GLFWwindow* window, int width, int height)
+{
+	glViewport(0, 0, width, height);
+}
+
+void userInput(GLFWwindow* window)
+{
+	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+		glfwSetWindowShouldClose(window, true);
+}
+
+GLuint createShader()
+{
 	GLint success;
 	GLchar infoLog[512];
 
@@ -110,12 +163,10 @@ int main()
 	}
 	glDeleteShader(vertexShader);
 	glDeleteShader(fragmentShader);
-
-
-	//VERTEX ATTRIBUTE
-	GLuint VBO;
-	GLuint VAO;
-	GLuint EBO;
+	return shaderProgram;
+}
+void linkVertexAttributes(GLuint &VBO,GLuint& VAO,GLuint &EBO)
+{
 	glGenVertexArrays(1, &VAO);
 	glGenBuffers(1, &VBO);
 	glGenBuffers(1, &EBO);
@@ -129,58 +180,9 @@ int main()
 	glEnableVertexAttribArray(0);
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
 	glEnableVertexAttribArray(1);
-
-
-
 	glBindBuffer(GL_ARRAY_BUFFER, 0);
 	// remember: do NOT unbind the EBO while a VAO is active as the bound element buffer object IS stored in the VAO; keep the EBO bound.
 	glBindVertexArray(0);
 	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, 0);
 
-
-
-	GLfloat timeValue;
-	GLfloat Value;
-	GLint vertexColorLocation;
-	glBindVertexArray(VAO);
-	glUseProgram(shaderProgram);
-	while (!glfwWindowShouldClose(window))
-	{
-		userInput(window);
-
-		glClearColor(0.926f, 0.836f, 0.789f, 1.0f);
-		glClear(GL_COLOR_BUFFER_BIT);
-
-
-		timeValue = glfwGetTime();
-		Value = sin(timeValue) / 2.0f + 0.5f;
-		vertexColorLocation = glGetUniformLocation(shaderProgram, "ourColor2");
-		glUniform4f(vertexColorLocation, Value, Value / 2, 0.0f, 1.0f);
-
-		glDrawElements(GL_TRIANGLES, 24, GL_UNSIGNED_INT, 0);
-
-		glfwSwapBuffers(window);
-		glfwPollEvents();
-	}
-
-
-
-	glDeleteVertexArrays(1, &VAO);
-	glDeleteBuffers(1, &VBO);
-	glDeleteBuffers(1, &EBO);
-	glDeleteProgram(shaderProgram);
-	glfwTerminate();
-	return 0;
-
-}
-
-void viewportResize(GLFWwindow* window, int width, int height)
-{
-	glViewport(0, 0, width, height);
-}
-
-void userInput(GLFWwindow* window)
-{
-	if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
-		glfwSetWindowShouldClose(window, true);
 }
